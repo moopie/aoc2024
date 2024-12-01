@@ -1,10 +1,9 @@
 use std::fs;
 
-fn main() {
-    let file_path = "input.txt";
-    println!("{file_path}\n");
+fn read_file(path: &str) -> (Vec<i32>, Vec<i32>) {
+    let arr: (Vec<i32>, Vec<i32>) = (vec![], vec![]);
 
-    let contents = fs::read_to_string(file_path)
+    let contents = fs::read_to_string(path)
         .expect("something went wrong");
 
     let lines: Vec<&str> = contents.split("\n").collect();
@@ -25,11 +24,14 @@ fn main() {
         println!("{line}\n");
     }
 
-    let sx = arr.0.len();
-    let sy = arr.1.len();
-    println!("{} and {}", arr.0.len(), arr.1.len());
-    arr.0.sort();
-    arr.1.sort();
+    return arr;
+}
+
+fn main() {
+    let file_path = "input.txt";
+    println!("{file_path}\n");
+
+    let arr = read_file(file_path);
 
     let zip: Vec<(i32, i32)> = arr.0.iter().zip(arr.1.iter())
         .map(|(&a, &b)| (a, b)).collect();
@@ -41,5 +43,16 @@ fn main() {
         res += n;
     }
 
-    println!("final result: {res}");
+    println!("part1 result: {res}");
+
+    // part 2
+
+    let mut respt: i32 = 0;
+
+    for num in arr.0.iter() {
+        let times = arr.1.iter().filter(|&&x| x == *num).count() as i32;
+        respt += num * times;
+    }
+    
+    println!("part2 result: {respt}");
 }
