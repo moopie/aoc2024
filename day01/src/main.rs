@@ -24,6 +24,9 @@ fn read_file(path: &str) -> (Vec<i32>, Vec<i32>) {
         println!("{line}\n");
     }
 
+    arr.0.sort();
+    arr.1.sort();
+
     return arr;
 }
 
@@ -53,6 +56,6 @@ fn main() {
         let times = arr.1.iter().filter(|&&x| x == *num).count() as i32;
         respt += num * times;
     }
-    
+
     println!("part2 result: {respt}");
 }
