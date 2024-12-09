@@ -47,10 +47,6 @@ fn check_rules(input: &str) -> u32 {
         if valid {
             let mid_index = book.len() / 2;
             let mid_value = book[mid_index];
-            if book.len() % 2 != 0 {
-                println!("err: book {:?} has uneven amount of elements", book);
-            }
-            //println!("valid book: {:?}, index: {}, value: {}", book.to_vec(), mid_index, mid_value);
             total = total + mid_value;
         }
     }
@@ -71,10 +67,7 @@ fn get_update_record(input: &str) -> SafetyManual {
                 .map(|x| {
                     match x.trim().parse::<Page>() {
                         Ok(value) => value,
-                        Err(err) => {
-                            println!("str: {}, err: {}", x, err);
-                            0
-                        }
+                        Err(err) => 0
                     }
                 })
                 .collect();
@@ -91,10 +84,7 @@ fn get_update_record(input: &str) -> SafetyManual {
                     .map(|x| {
                         match x.trim().parse::<Page>() {
                             Ok(value) => value,
-                            Err(err) => {
-                                println!("str: '{}', err: {}", x, err);
-                                0
-                            }
+                            Err(err) => 0
                         }
                     })
                     .collect();
