@@ -1,4 +1,5 @@
 use std::fs::read_to_string;
+use std::collections::HashSet;
 
 #[derive(Debug)]
 enum Direction {
@@ -42,9 +43,9 @@ fn print_map(map: Vec<Vec<char>>) {
         for jx in ix.iter() {
             print!("{jx}");
         }
-        println!("\n");
+        print!("\n");
     }
-    println!("\n");
+    print!("\n");
 }
 
 fn traverse(map: Vec<Vec<char>>, i: usize, j: usize, dir: Direction) -> u32 {
@@ -52,12 +53,9 @@ fn traverse(map: Vec<Vec<char>>, i: usize, j: usize, dir: Direction) -> u32 {
     let mut i = i;
     let mut j = j;
     let mut dir = dir;
-    let mut steps = 1;
-    print_map(map.clone());
-    //map[i][j] = 'X';
+    let mut moves = HashSet::new();
 
     while i >= 0 || i < map.len() || j >= 0 || j < map[0].len() {
-        print_map(map.clone());
         let (next_i, next_j) = match dir {
             Direction::Up => (i-1, j),
             Direction::Down => (i+1, j),
@@ -65,25 +63,25 @@ fn traverse(map: Vec<Vec<char>>, i: usize, j: usize, dir: Direction) -> u32 {
             Direction::Right => (i, j+1)
         };
 
+        moves.insert((i, j));
+
         if next_i < map.len() && next_j < map[0].len() {
             let next = map[next_i][next_j];
+
+            map[i][j] = 'X';
+
             match next {
-                '.' | '^' => {
-                    steps = steps + 1;
-                    map[i][j] = 'X';
+                '.' | '^' | 'X' => {
                     i = next_i;
                     j = next_j;
                 },
-                'X' => {
-                    i = next_i;
-                    j = next_j;
+                _ => {
+                    dir = change_direction(dir);
                 }
-                _ => dir = change_direction(dir)
             }
         }
         else {
-            //print_map(map);
-            return steps;
+            return moves.len().try_into().unwrap();
         }
     }
 
