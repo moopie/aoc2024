@@ -75,8 +75,14 @@ fn check_rules(input: &str, correct: bool) -> u32 {
         }
         else if correct {
             let mut new_entry = book.clone();
-            for rule in rules.iter() {
-                new_entry = rule.correct(new_entry.clone());
+            let mut is_valid = false;
+
+            while !is_valid {
+                for rule in rules.iter() {
+                    new_entry = rule.correct(new_entry.clone());
+                }
+
+                is_valid = rules.iter().all(|r| r.check_validity(new_entry.to_vec()));
             }
             let mid_index = new_entry.len() / 2;
             let mid_value = new_entry[mid_index];
