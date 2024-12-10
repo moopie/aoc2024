@@ -11,7 +11,7 @@ enum Direction {
 fn main() {
     println!("AOC 2024 day 6!");
 
-    let input = read_to_string("input.txt").expect("err");
+    let input = read_to_string("input2.txt").expect("err");
 
     let count = count_visits(input);
 
@@ -37,21 +37,27 @@ fn count_visits(input: String) -> u32 {
     return 0;
 }
 
+fn print_map(map: Vec<Vec<char>>) {
+    for ix in map.iter() {
+        for jx in ix.iter() {
+            print!("{jx}");
+        }
+        println!("\n");
+    }
+    println!("\n");
+}
+
 fn traverse(map: Vec<Vec<char>>, i: usize, j: usize, dir: Direction) -> u32 {
     let mut map = map;
     let mut i = i;
     let mut j = j;
     let mut dir = dir;
     let mut steps = 1;
-    map[i][j] = 'X';
+    print_map(map.clone());
+    //map[i][j] = 'X';
 
     while i >= 0 || i < map.len() || j >= 0 || j < map[0].len() {
-        for ix in map.iter() {
-            for jx in ix.iter() {
-                print!("{jx}");
-            }
-            print!("\n");
-        }
+        print_map(map.clone());
         let (next_i, next_j) = match dir {
             Direction::Up => (i-1, j),
             Direction::Down => (i+1, j),
@@ -76,6 +82,7 @@ fn traverse(map: Vec<Vec<char>>, i: usize, j: usize, dir: Direction) -> u32 {
             }
         }
         else {
+            //print_map(map);
             return steps;
         }
     }
@@ -122,5 +129,18 @@ mod tests {
         "#;
 
         assert_eq!(count_visits(input.to_string()), 41);
+    }
+
+    #[test]
+    fn zid_test() {
+        let input = r#"
+        .....
+        ..#..
+        ...#.
+        .....
+        ..^..
+        "#;
+
+        assert_eq!(count_visits(input.to_string()), 3);
     }
 }
