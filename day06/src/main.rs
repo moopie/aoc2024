@@ -12,7 +12,7 @@ enum Direction {
 fn main() {
     println!("AOC 2024 day 6!");
 
-    let input = read_to_string("input2.txt").expect("err");
+    let input = read_to_string("input.txt").expect("err");
 
     let count = count_visits(input);
 
@@ -55,34 +55,42 @@ fn traverse(map: Vec<Vec<char>>, i: usize, j: usize, dir: Direction) -> u32 {
     let mut dir = dir;
     let mut moves = HashSet::new();
 
-    while i >= 0 || i < map.len() || j >= 0 || j < map[0].len() {
+    while i < map.len() || j < map[0].len() {
         let (next_i, next_j) = match dir {
-            Direction::Up => (i-1, j),
-            Direction::Down => (i+1, j),
-            Direction::Left => (i, j-1),
-            Direction::Right => (i, j+1)
+            Direction::Up => (i.checked_sub(1), Some(j)),
+            Direction::Down => (i.checked_add(1), Some(j)),
+            Direction::Left => (Some(i), j.checked_sub(1)),
+            Direction::Right => (Some(i), j.checked_add(1))
         };
 
         moves.insert((i, j));
 
-        if next_i < map.len() && next_j < map[0].len() {
-            let next = map[next_i][next_j];
+        match (next_i, next_j) {
+            (Some(ni), Some(nj)) => {
+                if ni < map.len() && nj < map[0].len() {
+                    let next = map[ni][nj];
 
-            map[i][j] = 'X';
+                    map[i][j] = 'X';
 
-            match next {
-                '.' | '^' | 'X' => {
-                    i = next_i;
-                    j = next_j;
-                },
-                _ => {
-                    dir = change_direction(dir);
+                    match next {
+                        '.' | '^' | 'X' => {
+                            i = ni;
+                            j = nj;
+                        },
+                        _ => {
+                            dir = change_direction(dir);
+                        }
+                    }
                 }
+                else {
+                    return moves.len().try_into().unwrap();
+                }
+            },
+            _ => {
+                return moves.len().try_into().unwrap();
             }
         }
-        else {
-            return moves.len().try_into().unwrap();
-        }
+
     }
 
     0
@@ -140,5 +148,18 @@ mod tests {
         "#;
 
         assert_eq!(count_visits(input.to_string()), 3);
+    }
+
+    #[test]
+    fn zid_test2() {
+        let input = r#"
+        .....
+        ..#..
+        ....#
+        .....
+        ..^#.
+        "#;
+
+        assert_eq!(count_visits(input.to_string()), 7);
     }
 }
