@@ -19,8 +19,7 @@ fn parse_eqs(input: String) -> u32 {
             .map(|x| x.parse::<u32>().expect("err"))
             .collect();
 
-        let solutions = get_solutions(arr, target);
-        if solutions == 1 {
+        if get_solutions(arr, target) {
             ret += target;
         }
     }
@@ -28,32 +27,35 @@ fn parse_eqs(input: String) -> u32 {
     ret
 }
 
-fn get_solutions(equation: Vec<u32>, target: u32) -> u32 {
+fn get_solutions(equation: Vec<u32>, target: u32) -> bool {
     let n = equation.len();
-    let mut solutions = 0;
-
     let total_size = 1 << (n-1);
 
     for i in 0..total_size {
-        let mut result = 0;
+        let mut result = equation[0];
+        let mut ops: Vec<char> = vec![];
 
-        for ii in 0..equation.len() {
-            let num = equation[ii];
-            if i & (1 << ii) != 0 {
+        for ii in 0..equation.len() - 1 {
+            let num = equation[ii + 1];
+            let is_eq = i & (1 << ii) != 0;
+
+            if is_eq {
                 result += num;
+                ops.push('+');
             }
             else {
                 result *= num;
+                ops.push('*');
             }
         }
-        println!("{} target: {} | iter {}", result, target, i);
+
+        //println!("r: {}\tt: {} | {:?}", result, target, ops);
         if result == target {
-            solutions += 1;
+            return true;
         }
     }
-    println!("{:?} solutions: {}", equation, solutions);
 
-    solutions
+    false
 }
 
 fn main() {
@@ -87,7 +89,7 @@ mod tests {
     }
 
     #[test]
-    fn init_v2() {
+    fn init_190() {
         let input = r#"
             190: 10 19
         "#;
@@ -96,16 +98,16 @@ mod tests {
     }
 
     #[test]
-    fn init_v3() {
+    fn init_3267() {
         let input = r#"
             3267: 81 40 27
         "#;
 
-        assert_eq!(parse_eqs(input.to_string()), 0);
+        assert_eq!(parse_eqs(input.to_string()), 3267);
     }
 
     #[test]
-    fn init_v4() {
+    fn init_292() {
         let input = r#"
             292: 11 6 16 20
         "#;
