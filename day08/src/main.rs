@@ -2,8 +2,8 @@ use std::collections::HashSet;
 
 #[derive(Eq, PartialEq, Hash, Debug)]
 struct Distance {
-    distance: u64,
-    direction: u64
+    distance: usize,
+    direction: usize
 }
 
 fn get_node_count(str_map: String) -> u64 {
@@ -20,12 +20,12 @@ fn get_node_count(str_map: String) -> u64 {
         .collect();
 
     for freq in freqs {
-        let mut freq_locs: Vec<(f64, f64, char)> = vec![];
+        let mut freq_locs: Vec<(usize, usize, char)> = vec![];
 
         for (y, line) in map.iter().enumerate() {
             for (x, ch) in line.iter().enumerate() {
                 if freq == *ch {
-                    freq_locs.push((x as f64, y as f64, ch.clone()));
+                    freq_locs.push((x, y, ch.clone()));
                 }
             }
         }
@@ -38,15 +38,14 @@ fn get_node_count(str_map: String) -> u64 {
                     continue;
                 }
 
-                let dist = ((x1 - y1).abs() + (y1 - y2).abs()) as f64;
-                let dir = (y2 - y1).atan2(x2 - x1).to_degrees();
+                let dist = x1.abs_diff(*x2) + y1.abs_diff(*y2);
 
                 set.insert(Distance {
-                    distance: dist.abs() as u64,
-                    direction: dir.abs() as u64
+                    distance: dist,
+                    direction: 0
                 });
 
-                println!("\t'{}' ({},{})\tdist: {}\t dir {}", ch2, x2, y2, dist, dir);
+                println!("\t'{}' ({},{})\tdist: {}", ch2, x2, y2, dist);
             }
         }
     }
